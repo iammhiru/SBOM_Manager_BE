@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+*/node_modules/
+*/package-lock.json
+*/.env
+.env
+logs/
+*/logs/
+*/public
+src/public
+public/*
+public

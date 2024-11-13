@@ -1,0 +1,259 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Project 3 Backend",
+    "description": "Project 3 Backend",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000/api/v1",
+  "basePath": "/",
+  "schemes": "https",
+  "securityDefinitions": {
+    "apiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "apiSecret",
+      "description": "Some description..."
+    },
+    "userId": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "userId",
+      "description": "Some description..."
+    }
+  },
+  "paths": {
+    "/user/test": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Test module",
+        "description": "Test module",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Đăng kí tài khoản",
+        "description": "Đăng kí tài khoản",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "name": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Đăng nhập",
+        "description": "Đăng nhập",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/req-reset-pass": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Quên mật khẩu",
+        "description": "Quên mật khẩu",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/send-verify-email": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Gửi mail chứa OTP xác thực",
+        "description": "Gửi mail chứa OTP xác thực",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/verify-account-by-mail": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Xác thực mail",
+        "description": "Xác thực và kích hoạt email tài khoản bằng cách nhấp vào link",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "otp",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/verify-account-by-otp": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Xác thực mail",
+        "description": "Xác thực và kích hoạt email tài khoản bằng cách nhập OTP",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "otp": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/reset-pass": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Quên mật khẩu",
+        "description": "Quên mật khẩu",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "newPassword": {
+                  "example": "any"
+                },
+                "otp": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}

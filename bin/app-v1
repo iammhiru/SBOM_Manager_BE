@@ -1,0 +1,106 @@
+const dotenv = require("dotenv");
+dotenv.config();
+var path = require("path");
+const TAG = `[${path.basename(__filename)}] `;
+const { logger } = require("../src/services/logger");
+
+var app = require("../src/app");
+var http = require("http");
+
+//init database
+const db = require("../src/services/database");
+redis = require("../src/services/redis");
+const moment = require("moment");
+moment.tz.setDefault("Asia/Ho_Chi_Minh");
+var server;
+// logger.info(process.env);
+// console.log(process.env);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+initServer();
+async function initServer() {
+  let initDB = false;
+  while (!initDB) {
+    try {
+      await db.sequelize.sync({
+      //  alter: true,
+      });
+      initDB = true;
+    } catch (error) {
+      console.error(TAG, error);
+      console.error(TAG, `Can't connect to database retry in 5s`);
+      await sleep(5000);
+    }
+  }
+ await redis.initRedis();
+// cronJob
+//   const cronJob = require("../src/services/cron.js");
+//   cronJob.startJobs();
+  var port = normalizePort(process.env.PORT || "3000");
+  app.set("port", port);
+  console.log("www", "port", port);
+  /**
+   * Create HTTP server.
+   */
+  server = http.createServer(app);
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+  server.listen(port, "0.0.0.0", () => {
+    console.log(TAG, `listening at http://localhost:${port}`);
+  });
+  server.on("error", onError);
+  server.on("listening", onListening);
+  return true;
+}
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== "listen") {
+    // throw error;
+    return;
+  }
+  var port = normalizePort(process.env.PORT || "3000");
+  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " requires elevated privileges");
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(bind + " is already in use");
+      process.exit(1);
+      break;
+    default:
+      break;
+    // throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  logger.info("Listening on " + bind);
+}
