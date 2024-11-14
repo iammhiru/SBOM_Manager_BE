@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      organizationAdminId: {
+      projectManagerId: {
         type: DataTypes.INTEGER,
       },
       name: {

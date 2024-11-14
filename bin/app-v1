@@ -23,7 +23,7 @@ async function initServer() {
   while (!initDB) {
     try {
       await db.sequelize.sync({
-      //  alter: true,
+        alter: true,
       });
       initDB = true;
     } catch (error) {

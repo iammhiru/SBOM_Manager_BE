@@ -3,15 +3,15 @@ const TAG = `[${path.basename(__filename)}] `;
 const err = require("../configs/error");
 const utils = require("../utils/utils");
 const {
-  getAdminById,
-  getAdminByEmail,
-  getAdminByPhone,
-  getAdminByUsername,
-  updateAdmin,
-  createAdmin,
-  activateAdminAccount,
-  deleteAdmin
-} = require("../usecases/organizationAdmins");
+  getManagerById,
+  getManagerByEmail,
+  getManagerByPhone,
+  getManagerByUsername,
+  updateManager,
+  createManager,
+  activateManagerAccount,
+  deleteManager
+} = require("../usecases/projectManager");
 const {
   setApiSecret,
   setExpireApiSecretUser,
@@ -55,7 +55,7 @@ module.exports.test = async (req, res) => {
  */
 module.exports.register = async (req, res) => {
   try {
-    let { username, password, name, phone, email } = req.body;
+    let { username, password, name, email } = req.body;
 
     if (!email || !password) {
       console.error(TAG, err.ERROR_MISSING_PARAMS.description);
@@ -84,19 +84,9 @@ module.exports.register = async (req, res) => {
       );
     }
 
-    if (phone && !utils.isValidPhone(phone)) {
-      console.error(TAG, err.ERROR_INVALID_PARAMS.description);
-      return res.json(
-        utils.responseFailed(err.ERROR_INVALID_PARAMS.code, {
-          message: res.__(err.ERROR_INVALID_PARAMS.description),
-        }),
-      );
-    }
-
     if (
-      (username && (await getAdminByUsername(username))) ||
-      (phone && (await getAdminByPhone(phone))) ||
-      (email && (await getAdminByUsername(email)))
+      (username && (await getManagerByUsername(username))) ||
+      (email && (await getManagerByUsername(email)))
     ) {
       console.error(TAG, err.ERROR_USER_EXISTED.description);
       return res.json(
@@ -111,11 +101,10 @@ module.exports.register = async (req, res) => {
       username,
       password,
       name,
-      phone,
       email,
     };
 
-    newUser = await createAdmin(newUser);
+    newUser = await createManager(newUser);
 
     return res.json(utils.responseSuccess(newUser));
   } catch (error) {
@@ -147,7 +136,7 @@ module.exports.login = async (req, res) => {
       );
     }
 
-    let user = await getAdminByEmail(email);
+    let user = await getManagerByEmail(email);
     if (!user) {
       console.error(TAG, err.ERROR_USER_NOT_FOUND.description);
       return res.json(
@@ -167,8 +156,8 @@ module.exports.login = async (req, res) => {
       );
     }
 
-    let apiSecret = await setApiSecret(user.userId);
-    return res.json(utils.responseSuccess({ apiSecret, userId: user.userId }));
+    let apiSecret = await setApiSecret(user.projectManagerId);
+    return res.json(utils.responseSuccess({ apiSecret, userId: user.projectManagerId }));
   } catch (error) {
     console.error(TAG, error);
     return res.json(
@@ -241,7 +230,7 @@ module.exports.requestResetPassword = async (req, res) => {
       );
     }
 
-    let user = await getAdminByEmail(email);
+    let user = await getManagerByEmail(email);
     if (!user) {
       console.error(TAG, err.ERROR_USER_NOT_FOUND.description);
       return res.json(
@@ -299,7 +288,7 @@ module.exports.resetPassword = async (req, res) => {
       );
     }
 
-    let user = await getAdminByEmail(email);
+    let user = await getManagerByEmail(email);
     if (!user) {
       console.error(TAG, err.ERROR_USER_NOT_FOUND.description);
       return res.json(
@@ -329,7 +318,7 @@ module.exports.resetPassword = async (req, res) => {
     }
 
     let hashPass = utils.hashSHA256(newPassword);
-    await updateAdmin(user.organizationAdminId, {
+    await updateManager(user.projectManagerId, {
       password: hashPass,
       otp: null,
     });
@@ -364,7 +353,7 @@ module.exports.sendVerificationMail = async (req, res) => {
       );
     }
 
-    let user = await getAdminByEmail(email);
+    let user = await getManagerByEmail(email);
     if (!user) {
       console.error(TAG, err.ERROR_USER_NOT_FOUND.description);
       return res.json(
@@ -379,7 +368,7 @@ module.exports.sendVerificationMail = async (req, res) => {
     let expirationDate = moment().add(5, "minutes").format(DATETIME_FORMAT);
     let otpHash = utils.hashSHA256(otp);
 
-    await updateAdmin(user.organizationAdminId, {
+    await updateAdmin(user.projectManagerId, {
       otp: otpHash,
       expiryOtp: expirationDate,
     });
@@ -406,7 +395,7 @@ module.exports.verifyAccountByMail = async (req, res) => {
   try {
     let { userId, otp } = req.query;
 
-    let user = await getAdminById(userId);
+    let user = await getManagerById(userId);
     if (!user) {
       console.error(TAG, err.ERROR_USER_NOT_FOUND.description);
       return res.json(
@@ -471,7 +460,7 @@ module.exports.verifyAccountByOTP = async (req, res) => {
       );
     }
 
-    let user = await getAdminByEmail(email);
+    let user = await getManagerByEmail(email);
     if (!user) {
       console.error(TAG, err.ERROR_USER_NOT_FOUND.description);
       return res.json(

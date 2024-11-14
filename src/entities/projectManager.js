@@ -1,16 +1,16 @@
 const { DataTypes, Model } = require("sequelize");
 const _ = require("lodash");
-const { ORGANIZATION_ADMIN_STATUS } = require("../const/const");
+const { PROJECT_MANAGER_STATUS } = require("../const/const");
 module.exports = (sequelize) => {
-  class OrganizationAdmins extends Model {
+  class ProjectManagers extends Model {
     // eslint-disable-next-line no-unused-vars
     static associate(models) {
       // define association here
     }
   }
-  OrganizationAdmins.init(
+  ProjectManagers.init(
     {
-      organizationAdminId: {
+      projectManagerId: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -39,16 +39,16 @@ module.exports = (sequelize) => {
       },
       status: {
         type: DataTypes.STRING(32),
-        validate: { isIn: [_.values(ORGANIZATION_ADMIN_STATUS)] },
-        defaultValue: ORGANIZATION_ADMIN_STATUS.ACTIVE,
+        validate: { isIn: [_.values(PROJECT_MANAGER_STATUS)] },
+        defaultValue: PROJECT_MANAGER_STATUS.ACTIVE,
       },
     },
     {
       sequelize,
-      modelName: "OrganizationAdmins",
-      tableName: "OrganizationAdmins",
+      modelName: "ProjectManagers",
+      tableName: "ProjectManagers",
     },
   );
 
-  return OrganizationAdmins;
+  return ProjectManagers;
 };

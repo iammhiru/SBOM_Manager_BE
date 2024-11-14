@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { exec } = require('child_process');
+const { exec, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
@@ -33,15 +33,29 @@ exports.cloneRepository = async (repoUrl, projectId) => {
   });
 }
 
-exports.genSBOM = async (projectPath, type, name) => {
+exports.genSBOM = async (projectPath, type, outputFilePath) => {
   return new Promise((resolve, reject) => {
-    const command = `syft "${projectPath}" -o ${type} > "${name}"`;
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error generating SBOM: ${stderr}`);
-        return reject(error);
-      }
-      resolve(name);
+    const batchFilePath = `"E:\\Project_3_code\\backend\\src\\genSBOM.bat"`;
+    const command = `cmd.exe /c ${batchFilePath} ${projectPath} ${type} ${outputFilePath}`;
+
+    console.log(`Executing command: ${command}`);
+
+    exec(command, { maxBuffer: 1024 * 500 }, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing batch file: ${stderr}`);
+            reject(new Error(`Batch file execution failed with error: ${stderr || error.message}`));
+            return;
+        }
+
+        // Log standard output for debugging
+        console.log("syft stdout:", stdout);
+
+        // Log any warnings or non-critical errors
+        if (stderr) {
+            console.warn("syft stderr (warnings):", stderr);
+        }
+
+        resolve();
     });
-  });;
+});
 }

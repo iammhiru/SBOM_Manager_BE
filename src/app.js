@@ -10,6 +10,7 @@ require("body-parser-xml")(bodyParser);
 const userRouter = require("./routes/user.route");
 const projectRouter = require("./routes/project.route");
 const sbomRouter = require("./routes/sbom.route.js");
+const projectManagerRouter = require("./routes/projectManager.route.js");
 
 
 global.__basedir = __dirname;
@@ -66,6 +67,7 @@ app.use(
 app.use(`${process.env.ROUTE_PATH ?? "/api/v1"}`, userRouter);
 app.use(`${process.env.ROUTE_PATH ?? "/api/v1"}`, projectRouter);
 app.use(`${process.env.ROUTE_PATH ?? "/api/v1"}`, sbomRouter);
+app.use(`${process.env.ROUTE_PATH ?? "/api/v1"}`, projectManagerRouter);
 
 
 // catch 404 and forward to error handler

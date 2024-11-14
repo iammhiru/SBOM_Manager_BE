@@ -48,7 +48,7 @@ module.exports.test = async (req, res) => {
 module.exports.createSBOM = async (req, res) => {
     try {
         let { projectId } = req.params;
-        let { format, standard } = req.body;
+        let { format, standard, creatorId } = req.body;
 
         let project = await getProjectWithId(projectId);
         if (!project) {
@@ -70,6 +70,18 @@ module.exports.createSBOM = async (req, res) => {
             }
         }
 
+        if (creatorId) {
+          let user = await getUserById(creatorId);
+          if (!user) {
+            console.error(TAG, err.ERROR_USER_NOT_FOUND.description);
+            return res.json(
+              utils.responseFailed(err.ERROR_USER_NOT_FOUND.code, {
+                message: res.__(err.ERROR_USER_NOT_FOUND.description),
+              }),
+            );
+          }
+        }
+
         if (!type) {
             console.error(TAG, err.NOT_VALID_FORMAT.description);
             return res.json(
@@ -81,22 +93,17 @@ module.exports.createSBOM = async (req, res) => {
 
         const projectPath = path.join(process.env.BASE_DIRECTORY,'public','sbom',`${projectId}_${moment().format(DATE_FILENAME)}`);
         if (!fs.existsSync(projectPath)) fs.mkdirSync(projectPath, { recursive: true });
-        const command = `syft "${project.projectPath}" -o ${type} > "${projectPath}/SBOM.json"`;
+        const command = `syft "${project.projectPath}" -o ${type} > "${projectPath}\\SBOM.json"`;
         const fname = `${projectPath}/SBOM.json`;
         console.log(command);
-        // exec(command, (error, stdout, stderr) => {
-        //     if (error) {
-        //       console.error(`Error generating SBOM: ${stderr}`);
-        //     }
-        // });
-
-        let re = await genSBOM(projectPath, type, fname);
+        let re = await genSBOM(project.projectPath, type, fname);
         
         let newSBOM = {
             projectId,
             SBOMFormat: format,
             SBOMStandard: standard,
-            SBOMPath: `${projectPath}/SBOM.json`
+            SBOMPath: `${projectPath}/SBOM.json`,
+            creatorId
         };
 
         newSBOM = await createSBOM(newSBOM);

@@ -16,7 +16,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.Users = require("../entities/user")(sequelize);
 db.Projects = require("../entities/project")(sequelize);
-db.OrganizationAdmins = require("../entities/project")(sequelize);
+db.ProjectManagers = require("../entities/projectManager")(sequelize);
 db.SBOMs = require("../entities/SBOM")(sequelize);
 
 

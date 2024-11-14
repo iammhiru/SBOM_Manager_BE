@@ -18,6 +18,9 @@ module.exports = (sequelize) => {
       projectId: {
         type: DataTypes.INTEGER,
       },
+      creatorId: {
+        type: DataTypes.INTEGER,
+      },
       SBOMFormat: {
         type: DataTypes.STRING(128),
       },

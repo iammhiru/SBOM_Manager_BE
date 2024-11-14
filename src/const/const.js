@@ -1,7 +1,7 @@
 module.exports.USER_STATUS = { ACTIVE: "ACTIVE", INACTIVE: "INACTIVE" };
 module.exports.PROJECT_STATUS = { ACTIVE: "ACTIVE", INACTIVE: "INACTIVE" };
 module.exports.SBOM_STATUS = { ACTIVE: "ACTIVE", INACTIVE: "INACTIVE" };
-module.exports.ORGANIZATION_ADMIN_STATUS = { ACTIVE: "ACTIVE", INACTIVE: "INACTIVE" };
+module.exports.PROJECT_MANAGER_STATUS = { ACTIVE: "ACTIVE", INACTIVE: "INACTIVE" };
 module.exports.MIME_TYPE = {
   IMAGE_JPEG: "image/jpeg",
   VIDEO_MP4: "video/mp4",

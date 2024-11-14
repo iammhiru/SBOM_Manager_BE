@@ -10,6 +10,7 @@ const {
     deleteProject,
 } = require("../usecases/project");
 const { validateRepoAccess, cloneRepository } = require("../utils/repository.helper");
+const { getManagerById } = require("../usecases/projectManager");
 
 /**
  *
@@ -39,7 +40,7 @@ module.exports.test = async (req, res) => {
  */
 module.exports.createProject = async (req, res) => {
     try {
-        const { name, description, repoURL, repoAPIToken, organizationAdminId, status } = req.body;
+        const { name, description, repoURL, repoAPIToken, organizationAdminId, status, projectManagerId } = req.body;
     
         if (!repoURL) {
             console.error(TAG, err.ERROR_MISSING_PARAMS.description);
@@ -54,9 +55,21 @@ module.exports.createProject = async (req, res) => {
             const isValid = await validateRepoAccess(repoAPIToken, repoURL);
             if (!isValid) {
                 console.error(TAG, err.INVALID_GITHUB_TOKEN);
-                return res.json(utils.responseFailed(err.INVALID_GITHUB_TOKEN, {
+                return res.json(utils.responseFailed(err.INVALID_GITHUB_TOKEN.code, {
                     message: res.__(err.INVALID_GITHUB_TOKEN.description),
                 }));
+            }
+        }
+
+        if (projectManagerId) {
+            const manager = await getManagerById(projectManagerId);
+            if (!manager) {
+                console.error(TAG, err.ERROR_USER_NOT_FOUND.description);
+                return res.json(
+                    utils.responseFailed(err.ERROR_USER_NOT_FOUND.code, {
+                        message: res.__(err.ERROR_USER_NOT_FOUND.description),
+                    }),
+                );
             }
         }
 
@@ -67,6 +80,7 @@ module.exports.createProject = async (req, res) => {
             repoURL,
             repoAPIToken,
             status,
+            projectManagerId,
         };
         newProject = await createProject(newProject);
 

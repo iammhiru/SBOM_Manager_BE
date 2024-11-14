@@ -27,15 +27,6 @@ module.exports = (sequelize) => {
       password: {
         type: DataTypes.STRING(2048),
       },
-      dateOfBirth: {
-        type: DataTypes.DATE,
-      },
-      identityCardNumber: {
-        type: DataTypes.STRING,
-      },
-      salt: {
-        type: DataTypes.STRING,
-      },
       name: {
         type: DataTypes.STRING(256),
       },
@@ -50,36 +41,15 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(64),
         unique: true,
       },
-      permissions: {
-        type: DataTypes.JSON,
-      },
-      token: {
-        type: DataTypes.STRING(2048),
-      },
-      refreshToken: {
-        type: DataTypes.STRING(2048),
-      },
-      gafType: {
-        type: DataTypes.STRING(32),
-      },
-      gafId: {
-        type: DataTypes.STRING(1024),
-        unique: true,
-      },
-      balance: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-        comment: "Số dư tài khoản",
-      },
-      biometricKey: {
-        type: DataTypes.STRING(2048),
-      },
       otp: {
         type: DataTypes.STRING,
         comment: "OPT from email",
       },
       expiryOtp: {
         type: DataTypes.DATE,
+      },
+      token: {
+        type: DataTypes.STRING,
       },
       status: {
         type: DataTypes.STRING(32),
